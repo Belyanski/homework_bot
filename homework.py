@@ -30,7 +30,7 @@ HOMEWORK_VERDICTS = {
 
 def check_tokens() -> bool:
     """Проверяет доступность переменных окружения нужных для работы."""
-    return PRACTICUM_TOKEN and TELEGRAM_TOKEN and TELEGRAM_CHAT_ID
+    return all([PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID])
 
 
 def send_message(bot: telegram.Bot, message: str) -> None:
@@ -99,7 +99,7 @@ def main():
             'Отсутствует обязательная переменная окружения.\n'
             'Программа принудительно остановлена.'
         )
-        exit()
+        sys.exit()
 
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     current_timestamp = int(time.time())
@@ -110,7 +110,7 @@ def main():
             homeworks = check_response(response)
             if len(homeworks) == 0:
                 logging.debug('Ответ API пуст: нет домашних работ.')
-                break
+                continue
             for homework in homeworks:
                 message = parse_status(homework)
                 if last_send.get(homework['homework_name']) != message:
